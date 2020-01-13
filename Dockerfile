@@ -8,10 +8,9 @@ RUN apt-get update && \
     && apt-get autoclean \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /nld_sgn
-ADD . /nld_sgn/
+RUN export LC_ALL=C.UTF-8 \
+    && export LANG=C.UTF-8
 
-# RUN cp -f /neuro-learn/nginx.conf /etc/nginx
-RUN pip install -r requirements.txt -i https://pypi.doubanio.com/simple
+RUN pip3 install Flask -i https://pypi.doubanio.com/simple
 
 CMD ["/bin/bash"]
