@@ -25,12 +25,28 @@ CMD ["/bin/bash"]
 $ docker build -t ubuntu-with-python:dev .
 ```
 
-## Update the Docker image of Dev Env
+## Create and Update the Docker image of Dev Env
+
+### Create
+
+```Dockerfile
+FROM ubuntu-with-python:dev
+
+RUN pip3 install -r requirements.txt -i https://pypi.doubanio.com/simple
+
+CMD ["/bin/bash"]
+```
+
+```bash
+$ docker build -t nld-sgn-env:dev .
+```
+
+### Update
 
 ```bash
 $ docker ps
 CONTAINER ID        IMAGE                            COMMAND             CREATED             STATUS              PORTS                    NAMES
-9c1f1d3e7927        ubuntu-with-python:dev   "/bin/bash"         8 minutes ago       Up 8 minutes                            pensive_hofstadter
+9c1f1d3e7927        nld-sgn-env:dev   "/bin/bash"         8 minutes ago       Up 8 minutes                            pensive_hofstadter
 $ docker commit 9c1f1d3e7927 nld-sgn-env:dev
 ```
 
