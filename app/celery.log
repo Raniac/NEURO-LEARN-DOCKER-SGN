@@ -1,0 +1,26 @@
+Error: 
+Unable to load celery application.
+The module app was not found.
+
+/usr/local/lib/python3.6/dist-packages/celery/platforms.py:801: RuntimeWarning: You're running the worker with superuser privileges: this is
+absolutely not recommended!
+
+Please specify a different user using the --uid option.
+
+User information: uid=0 euid=0 gid=0 egid=0
+
+  uid=uid, euid=euid, gid=gid, egid=egid,
+[2020-01-13 13:08:03,619: INFO/MainProcess] Connected to redis://127.0.0.1:6379/0
+[2020-01-13 13:08:03,643: INFO/MainProcess] mingle: searching for neighbors
+[2020-01-13 13:08:04,689: INFO/MainProcess] mingle: all alone
+[2020-01-13 13:08:04,713: INFO/MainProcess] celery@152bf64faa40 ready.
+[2020-01-13 13:08:39,010: INFO/MainProcess] Received task: main.task_executor[58bd7859-3435-4852-8d51-90141e4f98ec]  
+/usr/local/lib/python3.6/dist-packages/celery/platforms.py:801: RuntimeWarning: You're running the worker with superuser privileges: this is
+absolutely not recommended!
+
+Please specify a different user using the --uid option.
+
+User information: uid=0 euid=0 gid=0 egid=0
+
+  uid=uid, euid=euid, gid=gid, egid=egid,
+[2020-01-13 13:08:39,041: INFO/ForkPoolWorker-2] Task main.task_executor[58bd7859-3435-4852-8d51-90141e4f98ec] succeeded in 0.013095900001644623s: 30

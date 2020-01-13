@@ -32,6 +32,9 @@ $ docker build -t ubuntu-with-python:dev .
 ```Dockerfile
 FROM ubuntu-with-python:dev
 
+RUN apt-get update \
+    && apt-get install redis-server
+
 RUN pip3 install -r requirements.txt -i https://pypi.doubanio.com/simple
 
 CMD ["/bin/bash"]
@@ -53,5 +56,7 @@ $ docker commit 9c1f1d3e7927 nld-sgn-env:dev
 ## Initiate Dev Env Docker
 
 ```bash
-docker run -it --rm -v /c/Users/Benny/Documents/Projects/nld_sgn:/nld_sgn -p 80:80 nld-sgn-env:dev /bin/bash
+$ docker run -it --rm -v /c/Users/Benny/Documents/Projects/nld_sgn:/nld_sgn -p 80:80 nld-sgn-env:dev /bin/bash
+$ redis-server &
+$ nohup celery worker -A main.celery --loglevel=info >> celery.log &
 ```
