@@ -10,6 +10,12 @@ app.config['CELERY_RESULT_BACKEND'] = 'redis://127.0.0.1:6379/0'
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
 
+## Loggers
+# app.logger.debug('A value for debugging')
+# app.logger.info('An info for notice')
+# app.logger.warning('A warning occurred (%d apples)', 42)
+# app.logger.error('An error occurred')
+
 @app.route('/')
 def hello_world():
     return 'Hello, Benny!'
@@ -20,11 +26,11 @@ def new_task():
 
     try:
         task_form = json.loads(request.data.decode("utf-8"))
-        print(task_form['proj_id'])
+        app.logger.debug(task_form['proj_id'])
 
-        task_executor.delay(
-            tasktype = task_form['task_type']
-        )
+        # task_executor.delay(
+        #     tasktype = task_form['task_type']
+        # )
 
         response_content['task_form'] = task_form
         response_content['msg'] = 'success'
