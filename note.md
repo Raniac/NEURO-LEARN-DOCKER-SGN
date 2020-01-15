@@ -53,12 +53,35 @@ CONTAINER ID        IMAGE                            COMMAND             CREATED
 $ docker commit 9c1f1d3e7927 nld-sgn-env:dev
 ```
 
+## Build Dev Env Docker from imcomking/pytorch_geometric:latest
+
+```Dockerfile
+FROM imcomking/pytorch_geometric:latest
+
+RUN apt-get update \
+    && apt-get -y install redis-server \
+    && apt-get clean \
+    && apt-get autoclean \
+    && rm -rf /var/lib/apt/lists/*
+
+ADD . /workspace/
+
+RUN pip install -r requirements.txt -i https://pypi.doubanio.com/simple
+
+CMD ["/bin/bash"]
+```
+
+```bash
+$ cd env/nld-sgn-env/
+$ docker build -t nld-sgn-env:pg .
+```
+
 ## Initiate Dev Env Docker
 
 ```bash
-$ docker run -it --rm -v /c/Users/Benny/Documents/Projects/nld_sgn:/nld_sgn -p 80:80 nld-sgn-env:dev /bin/bash
+$ docker run -it --rm -v /c/Users/Benny/Documents/Projects/nld_sgn:/nld_sgn -p 80:80 nld-sgn-env:pg /bin/bash
 $ redis-server &
 $ cd /nld_sgn/app
 $ nohup celery worker -A main.celery --loglevel=info >> celery.log &
-$ python3 main.py
+$ python main.py
 ```
