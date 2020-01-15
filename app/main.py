@@ -2,6 +2,7 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 from celery import Celery
+import argparse
 import json
 import time
 
@@ -11,6 +12,13 @@ app.config['CELERY_RESULT_BACKEND'] = 'redis://127.0.0.1:6379/0'
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
 
+parser = argparse.ArgumentParser(description='nld-sgn-main')
+parser.add_argument('--host', dest='host', default='0.0.0.0')
+parser.add_argument('--port', dest='port', default='80')
+args = parser.parse_args()
+HOST = args.host
+PORT = int(args.port)
+
 ## Loggers
 # app.logger.debug('A value for debugging')
 # app.logger.info('An info for notice')
@@ -18,8 +26,13 @@ celery.conf.update(app.config)
 # app.logger.error('An error occurred')
 
 @app.route('/')
-def hello_world():
-    return 'Hello, Benny!'
+def intro():
+    intro_cont = '''
+    NEURO-LEARN-DOCKER-SGN(NLD-SGN) is a dockerized application programming
+    interface developed with Flask, allowing users to run Schizo_Graph_Net 
+    models via the user interface provided by NEURO-LEARN-WEB.
+    '''
+    return intro_cont
 
 @app.route('/api/v0/new_task', methods=['POST'])
 def new_task():
@@ -71,4 +84,4 @@ def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, mo
     return
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=80, debug=True)
+    app.run(host=HOST, port=PORT, debug=True)
