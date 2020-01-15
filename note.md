@@ -57,8 +57,8 @@ $ docker commit 9c1f1d3e7927 nld-sgn-env:dev
 
 ```bash
 $ docker run -it --rm -v /c/Users/Benny/Documents/Projects/nld_sgn:/nld_sgn -p 80:80 nld-sgn-env:dev /bin/bash
-$ cd /nld_sgn/app
 $ redis-server &
+$ cd /nld_sgn/app
 $ nohup celery worker -A main.celery --loglevel=info >> celery.log &
 $ python3 main.py
 ```
