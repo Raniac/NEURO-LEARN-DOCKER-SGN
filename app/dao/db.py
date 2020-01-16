@@ -53,7 +53,13 @@ class MYSQLDB:
         cur = self.__GetConnect()
         cur.execute(sql)
         self.conn.commit()
-        self.conn.close()    
+        self.conn.close()
+
+def insert_new_task():
+    pass
+
+def update_task_result_by_task_id():
+    pass
 
 if __name__ == '__main__':
     mysql = MYSQLDB(host="116.56.138.220", user="root", pwd="root", db="neurolearn")
