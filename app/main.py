@@ -6,8 +6,7 @@ import argparse
 import json
 import time
 
-import torch_geometric
-import torch
+from sgn import core
 
 app = Flask(__name__)
 app.config['CELERY_BROKER_URL'] = 'redis://127.0.0.1:6379/0'
@@ -15,12 +14,12 @@ app.config['CELERY_RESULT_BACKEND'] = 'redis://127.0.0.1:6379/0'
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
 
-parser = argparse.ArgumentParser(description='nld-sgn-main')
-parser.add_argument('--host', dest='host', default='0.0.0.0')
-parser.add_argument('--port', dest='port', default='80')
-args = parser.parse_args()
-HOST = args.host
-PORT = int(args.port)
+# parser = argparse.ArgumentParser(description='nld-sgn-main')
+# parser.add_argument('--host', dest='host', default='0.0.0.0')
+# parser.add_argument('--port', dest='port', default='80')
+# args = parser.parse_args()
+# HOST = args.host
+# PORT = int(args.port)
 
 ## Loggers
 # app.logger.debug('A value for debugging')
@@ -83,8 +82,14 @@ def new_task():
 
 @celery.task
 def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, model, paramset):
-    print(taskid, tasktype, traindata, valdata, enabletest, testdata, model, paramset)
+    core.run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, model, paramset)
     return
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='nld-sgn-main')
+    parser.add_argument('--host', dest='host', default='0.0.0.0')
+    parser.add_argument('--port', dest='port', default='80')
+    args = parser.parse_args()
+    HOST = args.host
+    PORT = int(args.port)
     app.run(host=HOST, port=PORT, debug=True)
