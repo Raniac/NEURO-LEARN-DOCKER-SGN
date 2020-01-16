@@ -82,6 +82,8 @@ def new_task():
 
 @celery.task
 def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, model, paramset):
+    ## TODO add DAO for data acquisition
+    
     core.run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, model, paramset)
     return
 
