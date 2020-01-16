@@ -85,3 +85,7 @@ $ cd /nld_sgn/app
 $ nohup celery worker -A main.celery --loglevel=info >> celery.log &
 $ python main.py
 ```
+
+## References
+- [Train and Deploy Machine Learning Model With Web Interface - PyTorch & Flask](https://imadelhanafi.com/posts/train_deploy_ml_model/)
+- [在服务器的docker中部署深度学习模型（flask框架）](https://blog.csdn.net/MissShihong/article/details/103313396)
