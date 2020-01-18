@@ -74,11 +74,14 @@ def insert_new_task(mysql):
         status = 1
     return status
 
-def update_task_result_by_task_id():
-    pass
+def update_task_result_by_task_id(mysql):
+    return ''
 
-def get_data_by_data_name():
-    pass
+def get_data_by_data_name(mysql):
+    return ''
+
+def get_model_by_model_name(mysql):
+    return ''
 
 if __name__ == '__main__':
     mysql = MYSQLDB(host="116.56.138.220", user="root", pwd="root", db="neurolearn")

@@ -1,12 +1,10 @@
-from flask import Flask
-from flask import request
-from flask import jsonify
+from flask import Flask, request, jsonify
 from celery import Celery
 import argparse
 import json
 import time
 
-from dao.db import init_db, insert_new_task
+from dao.db import *
 from sgn import core
 
 app = Flask(__name__)
@@ -56,20 +54,19 @@ def new_task():
         task_config['param_set'] = task_form['param_set']
 
         status = insert_new_task(DB)
-        if status == 0:
-            pass
-            # task_executor.delay(
-            #     taskid = task_id,
-            #     tasktype = task_form['task_type'],
-            #     traindata = task_config['train_data'],
-            #     valdata = task_config['val_data'],
-            #     enabletest = task_config['enable_test'],
-            #     testdata = task_config['test_data'],
-            #     model = task_config['model'],
-            #     paramset = task_config['param_set']
-            # )
-        elif status == 1:
+        if status == 1:
             raise Exception('Database Error!')
+
+        # task_executor.delay(
+        #     taskid = task_id,
+        #     tasktype = task_form['task_type'],
+        #     traindata = task_config['train_data'],
+        #     valdata = task_config['val_data'],
+        #     enabletest = task_config['enable_test'],
+        #     testdata = task_config['test_data'],
+        #     model = task_config['model'],
+        #     paramset = task_config['param_set']
+        # )
 
         response_content['task_form'] = task_form
         response_content['msg'] = 'success'
@@ -84,8 +81,13 @@ def new_task():
 @celery.task
 def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, model, paramset):
     ## TODO add DAO for data acquisition
+    fetched_traindata = get_data_by_data_name()
+    fetched_valdata = get_data_by_data_name()
+    fetched_model = get_model_by_model_name()
+    if enable_test:
+        fetched_testdata = get_data_by_data_name()
     
-    core.run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, model, paramset)
+    core.run_model(taskid, tasktype, fetched_traindata, fetched_valdata, enabletest, fetched_testdata, fetched_model, paramset)
     return
 
 def parse_arg():
