@@ -6,6 +6,7 @@ import argparse
 import json
 import time
 
+from dao.db import init_db, insert_new_task
 from sgn import core
 
 app = Flask(__name__)
@@ -14,12 +15,7 @@ app.config['CELERY_RESULT_BACKEND'] = 'redis://127.0.0.1:6379/0'
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
 
-# parser = argparse.ArgumentParser(description='nld-sgn-main')
-# parser.add_argument('--host', dest='host', default='0.0.0.0')
-# parser.add_argument('--port', dest='port', default='80')
-# args = parser.parse_args()
-# HOST = args.host
-# PORT = int(args.port)
+global DB
 
 ## Loggers
 # app.logger.debug('A value for debugging')
@@ -59,16 +55,21 @@ def new_task():
         task_config['model'] = task_form['model']
         task_config['param_set'] = task_form['param_set']
 
-        task_executor.delay(
-            taskid = task_id,
-            tasktype = task_form['task_type'],
-            traindata = task_config['train_data'],
-            valdata = task_config['val_data'],
-            enabletest = task_config['enable_test'],
-            testdata = task_config['test_data'],
-            model = task_config['model'],
-            paramset = task_config['param_set']
-        )
+        status = insert_new_task(DB)
+        if status == 0:
+            pass
+            # task_executor.delay(
+            #     taskid = task_id,
+            #     tasktype = task_form['task_type'],
+            #     traindata = task_config['train_data'],
+            #     valdata = task_config['val_data'],
+            #     enabletest = task_config['enable_test'],
+            #     testdata = task_config['test_data'],
+            #     model = task_config['model'],
+            #     paramset = task_config['param_set']
+            # )
+        elif status == 1:
+            raise Exception('Database Error!')
 
         response_content['task_form'] = task_form
         response_content['msg'] = 'success'
@@ -87,11 +88,24 @@ def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, mo
     core.run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, model, paramset)
     return
 
-if __name__ == "__main__":
+def parse_arg():
     parser = argparse.ArgumentParser(description='nld-sgn-main')
     parser.add_argument('--host', dest='host', default='0.0.0.0')
     parser.add_argument('--port', dest='port', default='80')
+    parser.add_argument('--db_host', dest='db_host', default='120.79.49.129')
+    parser.add_argument('--db_name', dest='db_name', default='neurolearn')
+    parser.add_argument('--db_user', dest='db_user', default='neurolearn')
+    parser.add_argument('--db_pwd', dest='db_pwd', default='nl4444_')
     args = parser.parse_args()
+    return args
+
+if __name__ == "__main__":
+    args = parse_arg()
     HOST = args.host
     PORT = int(args.port)
+    DB_HOST = args.db_host
+    DB_NAME = args.db_name
+    DB_USER = args.db_user
+    DB_PWD = args.db_pwd
+    DB = init_db(db_host=DB_HOST, db_name=DB_NAME, db_user=DB_USER, db_pwd=DB_PWD)
     app.run(host=HOST, port=PORT, debug=True)

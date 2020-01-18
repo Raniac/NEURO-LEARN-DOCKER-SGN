@@ -55,10 +55,29 @@ class MYSQLDB:
         self.conn.commit()
         self.conn.close()
 
-def insert_new_task():
-    pass
+def init_db(db_host, db_name, db_user, db_pwd):
+    mysql = MYSQLDB(host=db_host, db=db_name, user=db_user, pwd=db_pwd)
+    return mysql
+
+def insert_new_task(mysql):
+    try:
+        sql = '''
+        SELECT username
+        FROM backend_users
+        '''
+        resList = mysql.ExecQuery(sql)
+        for inst in resList:
+            print(inst)
+        status = 0
+    except Exception as e:
+        print(e)
+        status = 1
+    return status
 
 def update_task_result_by_task_id():
+    pass
+
+def get_data_by_data_name():
     pass
 
 if __name__ == '__main__':
