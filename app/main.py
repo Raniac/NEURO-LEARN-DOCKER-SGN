@@ -56,6 +56,7 @@ def new_task():
         status = insert_new_task(DB)
         if status == 1:
             raise Exception('Database Error!')
+        app.logger.info('Task %s created! Waiting for execution...' % task_id)
 
         task_executor.delay(
             taskid = task_id,
