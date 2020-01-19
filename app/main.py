@@ -57,16 +57,16 @@ def new_task():
         if status == 1:
             raise Exception('Database Error!')
 
-        # task_executor.delay(
-        #     taskid = task_id,
-        #     tasktype = task_form['task_type'],
-        #     traindata = task_config['train_data'],
-        #     valdata = task_config['val_data'],
-        #     enabletest = task_config['enable_test'],
-        #     testdata = task_config['test_data'],
-        #     model = task_config['model'],
-        #     paramset = task_config['param_set']
-        # )
+        task_executor.delay(
+            taskid = task_id,
+            tasktype = task_form['task_type'],
+            traindata = task_config['train_data'],
+            valdata = task_config['val_data'],
+            enabletest = task_config['enable_test'],
+            testdata = task_config['test_data'],
+            model = task_config['model'],
+            paramset = task_config['param_set']
+        )
 
         response_content['task_form'] = task_form
         response_content['msg'] = 'success'
@@ -80,14 +80,15 @@ def new_task():
 
 @celery.task
 def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, model, paramset):
+    DB = init_db(db_host='120.79.49.129', db_name='neurolearn', db_user='neurolearn', db_pwd='nl4444_')
     ## TODO add DAO for data acquisition
-    fetched_traindata = get_data_by_data_name()
-    fetched_valdata = get_data_by_data_name()
-    fetched_model = get_model_by_model_name()
-    if enable_test:
-        fetched_testdata = get_data_by_data_name()
+    fetched_traindata = get_data_by_data_name(DB, traindata[0])
+    # fetched_valdata = get_data_by_data_name()
+    # fetched_model = get_model_by_model_name()
+    # if enable_test:
+    #     fetched_testdata = get_data_by_data_name()
     
-    core.run_model(taskid, tasktype, fetched_traindata, fetched_valdata, enabletest, fetched_testdata, fetched_model, paramset)
+    # core.run_model(taskid, tasktype, fetched_traindata, fetched_valdata, enabletest, fetched_testdata, fetched_model, paramset)
     return
 
 def parse_arg():

@@ -61,10 +61,11 @@ def init_db(db_host, db_name, db_user, db_pwd):
 
 def insert_new_task(mysql):
     try:
-        sql = '''
+        sql = """
         SELECT username
         FROM backend_users
-        '''
+        WHERE username = '%s'
+        """ % ('Raniac')
         resList = mysql.ExecQuery(sql)
         for inst in resList:
             print(inst)
@@ -77,7 +78,19 @@ def insert_new_task(mysql):
 def update_task_result_by_task_id(mysql):
     return ''
 
-def get_data_by_data_name(mysql):
+def get_data_by_data_name(mysql, data_name):
+    try:
+        sql = """
+        SELECT data_cont
+        FROM backend_datasets as datasets
+        WHERE datasets.data_name = '%s'
+        """ % (data_name)
+        fetList = mysql.ExecQuery(sql)
+        for inst in fetList:
+            print(inst)
+            print(type(inst))
+    except Exception as e:
+        print(e)
     return ''
 
 def get_model_by_model_name(mysql):
