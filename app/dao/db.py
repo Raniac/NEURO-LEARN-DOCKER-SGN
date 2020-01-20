@@ -86,15 +86,21 @@ def get_data_by_data_name(mysql, data_name):
         WHERE datasets.data_name = '%s'
         """ % (data_name)
         fetList = mysql.ExecQuery(sql)
-        for inst in fetList:
-            print(inst)
-            print(type(inst))
+        return fetList
     except Exception as e:
-        print(e)
-    return ''
+        return e
 
-def get_model_by_model_name(mysql):
-    return ''
+def get_model_by_model_name(mysql, model_name):
+    try:
+        sql = """
+        SELECT data_cont
+        FROM backend_datasets as datasets
+        WHERE datasets.data_name = '%s'
+        """ % (model_name)
+        fetList = mysql.ExecQuery(sql)
+        return fetList
+    except Exception as e:
+        return e
 
 if __name__ == '__main__':
     mysql = MYSQLDB(host="116.56.138.220", user="root", pwd="root", db="neurolearn")

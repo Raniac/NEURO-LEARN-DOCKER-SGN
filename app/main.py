@@ -79,6 +79,15 @@ def new_task():
 
     return jsonify(response_content)
 
+@app.route('/api/v0/test_db', methods=['GET'])
+def test_db():
+    try:
+        fetched = get_data_by_data_name(DB, 'A_181210_140_SZ_sfMRI_AAL90')
+        app.logger.debug(len(fetched))
+        return 'success'
+    except Exception as e:
+        return str(e)
+
 @celery.task
 def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, model, paramset):
     DB = init_db(db_host='120.79.49.129', db_name='neurolearn', db_user='neurolearn', db_pwd='nl4444_')
