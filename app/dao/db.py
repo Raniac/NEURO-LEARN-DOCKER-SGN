@@ -62,8 +62,8 @@ def init_db(db_host, db_name, db_user, db_pwd):
 def insert_new_task(mysql, task_id, proj_id, task_name, task_type, task_config, task_status):
     try:
         sql = """
-        INSERT INTO backend_submissions(`task_id`, `proj_id`, `task_name`, `task_type`, `task_config`, `task_status`)
-        VALUES('%s', '%s', '%s', '%s', '%s', '%s')
+        INSERT INTO backend_submissions(`task_id`, `proj_id`, `task_name`, `task_type`, `task_config`, `task_status`, `task_result`)
+        VALUES('%s', '%s', '%s', '%s', '%s', '%s', '')
         """ % (task_id, proj_id, task_name, task_type, task_config, task_status)
         mysql.ExecNonQuery(sql)
         status = 0
@@ -72,13 +72,13 @@ def insert_new_task(mysql, task_id, proj_id, task_name, task_type, task_config, 
         status = 1
     return status
 
-def update_task_result_by_task_id(mysql, taskid, result):
+def update_task_result_by_task_id(mysql, task_id, result):
     try:
         sql = """
         UPDATE backend_submissions
         SET `task_result` = '%s'
         WHERE `task_id` = '%s'
-        """ % (result, taskid)
+        """ % (result, task_id)
         mysql.ExecNonQuery(sql)
         status = 0
     except Exception as e:
@@ -101,9 +101,9 @@ def get_data_by_data_name(mysql, data_name):
 def get_model_by_model_name(mysql, model_name):
     try:
         sql = """
-        SELECT data_cont
-        FROM backend_datasets as datasets
-        WHERE datasets.data_name = '%s'
+        SELECT model_pkl
+        FROM backend_models as models
+        WHERE models.model_name = '%s'
         """ % (model_name)
         fetList = mysql.ExecQuery(sql)
         return fetList
