@@ -59,24 +59,32 @@ def init_db(db_host, db_name, db_user, db_pwd):
     mysql = MYSQLDB(host=db_host, db=db_name, user=db_user, pwd=db_pwd)
     return mysql
 
-def insert_new_task(mysql):
+def insert_new_task(mysql, task_id, proj_id, task_name, task_type, task_config, task_status):
     try:
         sql = """
-        SELECT username
-        FROM backend_users
-        WHERE username = '%s'
-        """ % ('Raniac')
-        resList = mysql.ExecQuery(sql)
-        for inst in resList:
-            print(inst)
+        INSERT INTO backend_submissions(`task_id`, `proj_id`, `task_name`, `task_type`, `task_config`, `task_status`)
+        VALUES('%s', '%s', '%s', '%s', '%s', '%s')
+        """ % (task_id, proj_id, task_name, task_type, task_config, task_status)
+        mysql.ExecNonQuery(sql)
         status = 0
     except Exception as e:
         print(e)
         status = 1
     return status
 
-def update_task_result_by_task_id(mysql):
-    return ''
+def update_task_result_by_task_id(mysql, taskid, result):
+    try:
+        sql = """
+        UPDATE backend_submissions
+        SET `task_result` = '%s'
+        WHERE `task_id` = '%s'
+        """ % (result, taskid)
+        mysql.ExecNonQuery(sql)
+        status = 0
+    except Exception as e:
+        print(e)
+        status = 1
+    return status
 
 def get_data_by_data_name(mysql, data_name):
     try:

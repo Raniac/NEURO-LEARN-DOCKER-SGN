@@ -53,7 +53,15 @@ def new_task():
         task_config['model'] = task_form['model']
         task_config['param_set'] = task_form['param_set']
 
-        status = insert_new_task(DB)
+        status = insert_new_task(
+            mysql=DB,
+            task_id=task_id,
+            proj_id=proj_id,
+            task_name=task_name,
+            task_type=task_type,
+            task_config=task_config,
+            task_status='Submitted'
+            )
         if status == 1:
             raise Exception('Database Error!')
         app.logger.info('Task %s created! Waiting for execution...' % task_id)
