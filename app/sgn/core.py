@@ -106,11 +106,14 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, model,
     ## learning-rate scheduler.
     scheduler = lr_scheduler.StepLR(optimizer, step_size=LR_STEP_SIZE, gamma=LR_DECAY)
 
+    train_epochs = []
     for epoch in range(1, NUM_EPOCHS+1):
         scheduler.step()
         train_loss, train_acc = train(device, model, optimizer, train_loader, len(train_dataset))
         test_loss, test_acc, _ = test(device, model, test_loader, len(test_dataset))
-        logging.info('Epoch {:03d}, Train Loss: {:.4f}, Train Accuracy: {:.4f}, Test Loss: {:.4f}, Test Accuracy: {:.4f}'.format(epoch, train_loss, train_acc, test_loss, test_acc))
+        epoch_res = 'Epoch {:03d}, Train Loss: {:.4f}, Train Accuracy: {:.4f}, Test Loss: {:.4f}, Test Accuracy: {:.4f}'.format(epoch, train_loss, train_acc, test_loss, test_acc)
+        logging.info(epoch_res)
+        train_epochs.append(epoch_res)
 
     ## checking final test results
     test_loss, test_acc, test_out = test(device, model, test_loader, len(test_dataset))
@@ -129,4 +132,7 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, model,
     ## TODO save model and parameters to pickle, referring to https://blog.csdn.net/fendoubasaonian/article/details/88552370
     # torch.save(model, MODEL_NAME)
 
-    return
+    result_dict = {}
+    result_dict['train_epochs'] = train_epochs
+
+    return result_dict

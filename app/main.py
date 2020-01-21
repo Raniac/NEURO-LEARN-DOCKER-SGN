@@ -59,7 +59,7 @@ def new_task():
             proj_id=proj_id,
             task_name=task_name,
             task_type=task_type,
-            task_config=task_config,
+            task_config=json.dumps(task_config),
             task_status='Submitted'
             )
         if status == 1:
@@ -111,14 +111,15 @@ def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, mo
     fetched_model = get_model_by_model_name(DB, model)
     
     fetched_test_data = []
-    if enable_test:
+    if enabletest:
         for test_data_name in testdata:
             fetched_test_data.append(get_data_by_data_name(DB, test_data_name))
     
     update_task_result_by_task_id(DB, taskid, '', 'Running')
     try:
-        results = core.run_model(taskid, tasktype, fetched_traind_ata, fetched_val_data, enabletest, fetched_test_data, fetched_model, paramset)
-        update_task_result_by_task_id(DB, taskid, results, 'Success')
+        results = core.run_model(taskid, tasktype, fetched_train_data, fetched_val_data, enabletest, fetched_test_data, fetched_model, paramset)
+        results_json = json.dumps(results)
+        update_task_result_by_task_id(DB, taskid, results_json, 'Success')
     except Exception as e:
         update_task_result_by_task_id(DB, taskid, str(e), 'Failed')
     return
