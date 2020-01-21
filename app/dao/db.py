@@ -72,19 +72,17 @@ def insert_new_task(mysql, task_id, proj_id, task_name, task_type, task_config, 
         status = 1
     return status
 
-def update_task_result_by_task_id(mysql, task_id, result):
+def update_task_result_by_task_id(mysql, task_id, task_result, task_status):
     try:
         sql = """
         UPDATE backend_submissions
-        SET `task_result` = '%s'
+        SET `task_result` = '%s', `task_status` = '%s'
         WHERE `task_id` = '%s'
-        """ % (result, task_id)
+        """ % (task_result, task_status, task_id)
         mysql.ExecNonQuery(sql)
-        status = 0
     except Exception as e:
         print(e)
-        status = 1
-    return status
+    return
 
 def get_data_by_data_name(mysql, data_name):
     try:

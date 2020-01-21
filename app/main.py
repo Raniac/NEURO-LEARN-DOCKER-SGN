@@ -100,22 +100,27 @@ def test_db():
 def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, model, paramset):
     DB = init_db(db_host='120.79.49.129', db_name='neurolearn', db_user='neurolearn', db_pwd='nl4444_')
     ## TODO add DAO for data acquisition
-    # fetched_train_data = []
-    # for train_data_name in traindata:
-    #     fetched_train_data.append(get_data_by_data_name(DB, train_data_name))
+    fetched_train_data = []
+    for train_data_name in traindata:
+        fetched_train_data.append(get_data_by_data_name(DB, train_data_name))
     
-    # fetched_val_data = []
-    # for val_data_name in valdata:
-    #     fetched_val_data.append(get_data_by_data_name(DB, val_data_name))
+    fetched_val_data = []
+    for val_data_name in valdata:
+        fetched_val_data.append(get_data_by_data_name(DB, val_data_name))
     
-    # fetched_model = get_model_by_model_name(DB, model)
+    fetched_model = get_model_by_model_name(DB, model)
     
-    # fetched_test_data = []
-    # if enable_test:
-    #     for test_data_name in testdata:
-    #         fetched_test_data.append(get_data_by_data_name(DB, test_data_name))
+    fetched_test_data = []
+    if enable_test:
+        for test_data_name in testdata:
+            fetched_test_data.append(get_data_by_data_name(DB, test_data_name))
     
-    core.run_model(taskid, tasktype, fetched_traind_ata, fetched_val_data, enabletest, fetched_test_data, fetched_model, paramset)
+    update_task_result_by_task_id(DB, taskid, '', 'Running')
+    try:
+        results = core.run_model(taskid, tasktype, fetched_traind_ata, fetched_val_data, enabletest, fetched_test_data, fetched_model, paramset)
+        update_task_result_by_task_id(DB, taskid, results, 'Success')
+    except Exception as e:
+        update_task_result_by_task_id(DB, taskid, str(e), 'Failed')
     return
 
 def parse_arg():
