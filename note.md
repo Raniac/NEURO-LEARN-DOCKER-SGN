@@ -59,6 +59,7 @@ $ docker commit 9c1f1d3e7927 nld-sgn-env:dev
 FROM imcomking/pytorch_geometric:latest
 
 RUN apt-get update \
+    && apt-get -y install nginx \
     && apt-get -y install redis-server \
     && apt-get clean \
     && apt-get autoclean \
@@ -80,11 +81,12 @@ $ docker build -t nld-sgn-env:pg .
 
 ```bash
 $ docker run -it --rm -v /c/Users/Benny/Documents/Projects/nld_sgn:/nld_sgn -p 80:80 nld-sgn-env:pg /bin/bash
+$ service nginx start
 $ redis-server &
 $ cd /nld_sgn/app
 $ nohup celery worker -A main.celery --loglevel=info >> celery.log &
 $ # python main.py
-$ gunicorn main:app --bind 0.0.0.0:80 --workers 4 --log-level debug
+$ gunicorn main:app --bind 0.0.0.0:8000 --workers 4 --log-level debug
 ```
 
 ## References
