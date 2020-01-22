@@ -13,7 +13,7 @@ app.config['CELERY_RESULT_BACKEND'] = 'redis://127.0.0.1:6379/0'
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
 
-global DB
+DB = init_db(db_host='120.79.49.129', db_name='neurolearn', db_user='neurolearn', db_pwd='nl4444_')
 
 ## Loggers
 # app.logger.debug('A value for debugging')

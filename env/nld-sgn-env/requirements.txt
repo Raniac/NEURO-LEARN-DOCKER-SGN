@@ -3,3 +3,4 @@ pymysql
 celery
 redis
 amqp
+gunicorn

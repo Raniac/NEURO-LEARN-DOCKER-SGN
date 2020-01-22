@@ -83,7 +83,8 @@ $ docker run -it --rm -v /c/Users/Benny/Documents/Projects/nld_sgn:/nld_sgn -p 8
 $ redis-server &
 $ cd /nld_sgn/app
 $ nohup celery worker -A main.celery --loglevel=info >> celery.log &
-$ python main.py
+$ # python main.py
+$ gunicorn main:app --bind 0.0.0.0:80 --workers 4 --log-level debug
 ```
 
 ## References
