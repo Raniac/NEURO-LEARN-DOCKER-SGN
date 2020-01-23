@@ -89,6 +89,32 @@ $ # python main.py
 $ gunicorn main:app --bind 0.0.0.0:8000 --workers 4 --log-level debug
 ```
 
+## Build NEURO-LEARNN-DOCKER-SGN with Dev Env Docker
+
+```Dockerfile
+FROM nld-sgn-env:pg
+
+# RUN apt-get update \
+#     && apt-get -y install nginx \
+#     && apt-get -y install redis-server \
+#     && apt-get clean \
+#     && apt-get autoclean \
+#     && rm -rf /var/lib/apt/lists/*
+
+ADD ./app/ /workspace/
+
+# RUN pip install -r requirements.txt -i https://pypi.doubanio.com/simple
+
+CMD ["/bin/bash"]
+```
+
+## Initiate NLD-SGN
+
+- Mount host directories into container in order to add writable files, such as new models.
+```bash
+$ docker run -it --rm -v /path/to/nld_sgn:/nld_sgn -p 80:80 raniac/neuro-learn-docker:sgn
+```
+
 ## References
 - [Train and Deploy Machine Learning Model With Web Interface - PyTorch & Flask](https://imadelhanafi.com/posts/train_deploy_ml_model/)
 - [在服务器的docker中部署深度学习模型（flask框架）](https://blog.csdn.net/MissShihong/article/details/103313396)
