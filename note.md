@@ -89,6 +89,26 @@ $ # python main.py
 $ gunicorn main:app --bind 0.0.0.0:8000 --workers 4 --log-level debug
 ```
 
+## Build Docker Registry for Kubernetes
+
+### Server End
+
+```bash
+$ docker search registry
+$ docker run -d -p 5000:5000 -v /docker/registry/data:/var/lib/registry --privileged=true --restart=always --name registry registry:latest
+```
+> Note that the port 5000 of the server need to be opened.
+
+### User End
+
+- Ubuntu: configure ```"insecure-registries"``` in ```/etc/docker/daemon.json```;
+- Windows: configure ```"insecure-registries"``` in Daemon of Docker Desktop.
+
+```bash
+$ docker tag ubuntu-with-python:dev 120.79.49.129:5000/ubuntu-with-python:latest
+$ docker push 120.79.49.129:5000/ubuntu-with-python
+```
+
 ## Build NEURO-LEARNN-DOCKER-SGN with Dev Env Docker
 
 ```Dockerfile
@@ -110,6 +130,9 @@ $ docker run -it --rm -v /path/to/extra:/nld_sgn/extra -p 80:80 raniac/neuro-lea
 ## References
 - [Train and Deploy Machine Learning Model With Web Interface - PyTorch & Flask](https://imadelhanafi.com/posts/train_deploy_ml_model/)
 - [在服务器的docker中部署深度学习模型（flask框架）](https://blog.csdn.net/MissShihong/article/details/103313396)
+- [关于docker-Compose基本使用](https://www.jianshu.com/p/808385b9e4aa)
+- [Flask 应用如何部署](https://www.cnblogs.com/hellohorld/p/10033720.html)
+- [Docker+K8S笔记(二)：Linux安装docker-registry](https://my.oschina.net/u/4075242/blog/3068384)
 
 ## Appendix
 
