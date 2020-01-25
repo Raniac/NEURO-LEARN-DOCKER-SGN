@@ -58,7 +58,7 @@ def test(device, model, data_loader, data_size):
     
     return test_loss, test_acc, test_out
 
-def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, model, paramset):
+def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, modelpath, paramset):
     ## Hyper-parameter setting
     SEED          = 1 # seed for random state
     DATA_PATH     = '/' # where to locate the data
@@ -68,7 +68,7 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, model,
     LR_STEP_SIZE  = paramset['lr_step_size'] # epochs before each lr decay
     LR_DECAY      = paramset['lr_decay'] # multiplied by for lr decay
     NUM_EPOCHS    = paramset['epochs'] # number of epochs for training
-    MODEL_NAME    = 'models/test.pkl' # name of the model
+    MODEL_NAME    = '/nld_sgn/models/' + taskid + '.pkl' # name of the model
 
     ## Configure logging
     logging.basicConfig(level=logging.INFO, format='[%(asctime)s %(levelname)s] %(message)s')
@@ -99,8 +99,8 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, model,
     else:
         logging.info('Using CPU')
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = Net_191225().to(device)
-    # model = torch.load('models/baseline.pkl')
+    # model = Net_191225().to(device)
+    model = torch.load(modelpath)
     optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
     ## learning-rate scheduler.
@@ -130,7 +130,7 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, model,
     print(test_check)
 
     ## TODO save model and parameters to pickle, referring to https://blog.csdn.net/fendoubasaonian/article/details/88552370
-    # torch.save(model, MODEL_NAME)
+    torch.save(model, MODEL_NAME)
 
     result_dict = {}
     result_dict['train_epochs'] = train_epochs

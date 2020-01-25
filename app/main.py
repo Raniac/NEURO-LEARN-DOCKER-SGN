@@ -108,7 +108,8 @@ def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, mo
     for val_data_name in valdata:
         fetched_val_data.append(get_data_by_data_name(DB, val_data_name))
     
-    fetched_model = get_model_by_model_name(DB, model)
+    # fetched_model_path = get_model_by_model_name(DB, model)
+    fetched_model_path = '/nld_sgn/models/TASK20012514531800.pkl'
     
     fetched_test_data = []
     if enabletest:
@@ -117,7 +118,7 @@ def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, mo
     
     update_task_result_by_task_id(DB, taskid, '', 'Running')
     try:
-        results = core.run_model(taskid, tasktype, fetched_train_data, fetched_val_data, enabletest, fetched_test_data, fetched_model, paramset)
+        results = core.run_model(taskid, tasktype, fetched_train_data, fetched_val_data, enabletest, fetched_test_data, fetched_model_path, paramset)
         results_json = json.dumps(results)
         update_task_result_by_task_id(DB, taskid, results_json, 'Success')
     except Exception as e:

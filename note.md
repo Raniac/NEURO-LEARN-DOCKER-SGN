@@ -124,7 +124,7 @@ CMD ["sh","/nld_sgn/start.sh"]
 
 - Mount host directories into container in order to add writable files, such as new models.
 ```bash
-$ docker run -it --rm -v /path/to/extra:/nld_sgn/extra -p 80:80 raniac/neuro-learn-docker:sgn
+$ docker run -it --rm -v /path/to/models:/nld_sgn/models -p 80:80 raniac/neuro-learn-docker:sgn
 ```
 
 ## References
