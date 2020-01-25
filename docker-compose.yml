@@ -1,0 +1,37 @@
+version: '2'
+
+services:
+  # zoo1:
+  #   # 依赖于wurstmeister/zookeeper镜像，本地无则自动下载
+  #   image: wurstmeister/zookeeper
+  #   restart: unless-stopped
+  #   hostname: zoo1
+  #   # 映射端口
+  #   ports:
+  #     - "2181:2181"
+  #   # 容器名称
+  #   container_name: zookeeper
+  nld-sgn:
+    # 依赖于wurstmeister/kafka镜像
+    image: 120.79.49.129:5000/ubuntu-with-python:latest
+    # restart: unless-stopped
+    hostname: nld-sgn
+    # 映射端口
+    ports:
+      - "80:80"
+    # 目录挂载 【容器目录:宿主机目录】
+    volumes:
+      - /c/Users/Benny/Documents/Projects/nld_sgn:/nld_sgn
+    # # 配置环境变量
+    # environment:
+    #   KAFKA_ADVERTISED_HOST_NAME: localhost
+    #   KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
+    #   KAFKA_BROKER_ID: 1
+    #   KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    #   KAFKA_CREATE_TOPICS: "stream-in:1:1,stream-out:1:1"
+    # 解决服务启动顺序问题，例如下面容器会先确定zoo1和redis两个服务，最后才启动kafka1服务
+    # depends_on:
+    #   - zoo1
+    #   - redis（实际无该容器）
+    # 容器名称
+    container_name: nld-sgn
