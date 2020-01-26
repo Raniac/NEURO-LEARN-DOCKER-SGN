@@ -114,8 +114,7 @@ $ docker push 120.79.49.129:5000/ubuntu-with-python
 ```Dockerfile
 FROM nld-sgn-env:pg
 
-ADD ./app/ /nld_sgn/
-ADD ./start.sh /nld_sgn/
+ADD . /nld_sgn/
 
 CMD ["sh","/nld_sgn/start.sh"]
 ```
@@ -126,6 +125,7 @@ CMD ["sh","/nld_sgn/start.sh"]
 ```bash
 $ docker run -it --rm -v /path/to/models:/nld_sgn/models -p 80:80 raniac/neuro-learn-docker:sgn
 ```
+- Or use docker-compose.
 
 ## References
 - [Train and Deploy Machine Learning Model With Web Interface - PyTorch & Flask](https://imadelhanafi.com/posts/train_deploy_ml_model/)
@@ -139,3 +139,7 @@ $ docker run -it --rm -v /path/to/models:/nld_sgn/models -p 80:80 raniac/neuro-l
 ### Nginx Configuration
 
 See nginx.conf.
+
+### Docker-Compose Configuration
+
+See docker-compose.yml.
