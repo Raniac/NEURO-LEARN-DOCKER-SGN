@@ -121,6 +121,7 @@ def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, mo
         results = core.run_model(taskid, tasktype, fetched_train_data, fetched_val_data, enabletest, fetched_test_data, fetched_model_path, paramset)
         results_json = json.dumps(results)
         update_task_result_by_task_id(DB, taskid, results_json, 'Success')
+        # insert_new_model_with_task_id(DB, taskid, results['model_path'])
     except Exception as e:
         update_task_result_by_task_id(DB, taskid, str(e), 'Failed')
     return

@@ -68,7 +68,7 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, modelp
     LR_STEP_SIZE  = paramset['lr_step_size'] # epochs before each lr decay
     LR_DECAY      = paramset['lr_decay'] # multiplied by for lr decay
     NUM_EPOCHS    = paramset['epochs'] # number of epochs for training
-    MODEL_NAME    = '/nld_sgn/models/' + taskid + '.pkl' # name of the model
+    SAVE_PATH     = '/nld_sgn/models/' + taskid + '.pkl' # name of the model
 
     ## Configure logging
     logging.basicConfig(level=logging.INFO, format='[%(asctime)s %(levelname)s] %(message)s')
@@ -134,5 +134,6 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, modelp
 
     result_dict = {}
     result_dict['train_epochs'] = train_epochs
+    result_dict['model_path'] = SAVE_PATH
 
     return result_dict

@@ -84,6 +84,19 @@ def update_task_result_by_task_id(mysql, task_id, task_result, task_status):
         print(e)
     return
 
+def insert_new_model_with_task_id(mysql, task_id, model_path):
+    try:
+        sql = """
+        INSERT INTO backend_models(`model_name`, `model_path`)
+        VALUES('%s', '%s')
+        """ % (task_id, model_path)
+        mysql.ExecNonQuery(sql)
+        status = 0
+    except Exception as e:
+        print(e)
+        status = 1
+    return status
+
 def get_data_by_data_name(mysql, data_name):
     try:
         sql = """
