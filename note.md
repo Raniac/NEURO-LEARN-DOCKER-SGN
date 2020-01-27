@@ -97,6 +97,7 @@ $ gunicorn main:app --bind 0.0.0.0:8000 --workers 4 --log-level debug
 $ docker search registry
 $ docker run -d -p 5000:5000 -v /docker/registry/data:/var/lib/registry --privileged=true --restart=always --name registry registry:latest
 ```
+
 > Note that the port 5000 of the server need to be opened.
 
 ### User End
@@ -118,6 +119,8 @@ ADD . /nld_sgn/
 
 CMD ["sh","/nld_sgn/start.sh"]
 ```
+
+> Use .dockerignore to neglect useless files.
 
 ## Initiate NLD-SGN
 
