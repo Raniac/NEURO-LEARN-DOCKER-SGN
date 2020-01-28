@@ -8,15 +8,9 @@ services:
     ports:
       - "80:80"
     volumes:
-      # - /c/Users/Benny/Documents/Projects/nld_sgn:/nld_sgn
       - /c/Users/Benny/Documents/Projects/nld_sgn/models:/nld_sgn/models
     # environment:
     #   KAFKA_ADVERTISED_HOST_NAME: localhost
-    #   KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
-    #   KAFKA_BROKER_ID: 1
-    #   KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    #   KAFKA_CREATE_TOPICS: "stream-in:1:1,stream-out:1:1"
     # depends_on:
     #   - zoo1
-    #   - redis
     container_name: sgn-service

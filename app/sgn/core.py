@@ -99,8 +99,13 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, modelp
     else:
         logging.info('Using CPU')
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    ## 1. Train new model from scratch
     # model = Net_191225().to(device)
-    model = torch.load(modelpath)
+    ## 2.1. Load model parameters with network structure
+    # model = torch.load(modelpath)
+    ## 2.2. Load model parameters
+    # model = Net_191225().to(device)
+    # model.load_state_dict(torch.load(modelpath))
     optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
     ## learning-rate scheduler.
@@ -130,10 +135,13 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, modelp
     print(test_check)
 
     ## TODO save model and parameters to pickle, referring to https://blog.csdn.net/fendoubasaonian/article/details/88552370
-    torch.save(model, MODEL_NAME)
+    ## 1. Save model parameters and network structure
+    # torch.save(model, SAVE_PATH)
+    ## 2. Save model parameters
+    # torch.save(model.state_dict(), SAVE_PATH)
 
     result_dict = {}
     result_dict['train_epochs'] = train_epochs
-    result_dict['model_path'] = SAVE_PATH
+    # result_dict['model_path'] = SAVE_PATH
 
     return result_dict
