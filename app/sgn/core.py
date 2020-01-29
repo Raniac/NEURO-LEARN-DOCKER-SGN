@@ -2,6 +2,7 @@ import time
 import logging
 import argparse
 import random
+import pickle
 import numpy as np
 
 import torch
@@ -106,7 +107,12 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, modelp
     ## 2.2. Load model parameters
     # model = Net_191225().to(device)
     # model.load_state_dict(torch.load(modelpath))
+    ## 2.3. Load model parameters by pickle
+    # loaded_model_state = pickle.loads(modelstatepickle)
+    # model = Net_191225()
+    # model.load_state_dict(loaded_model_state['state_dict'])
     optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
+    # optimizer.load_state_dict(load_model_state['optimizer'])
 
     ## learning-rate scheduler.
     scheduler = lr_scheduler.StepLR(optimizer, step_size=LR_STEP_SIZE, gamma=LR_DECAY)
@@ -139,9 +145,16 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, modelp
     # torch.save(model, SAVE_PATH)
     ## 2. Save model parameters
     # torch.save(model.state_dict(), SAVE_PATH)
+    ## 3. Serialize model parameters by pickle
+    # model_state = {
+    #     'state_dict', model.state_dict(),
+    #     'optimizer', optimizer.state_dict()
+    # }
+    # model_state_pickle = pickle.dumps(model_state)
 
     result_dict = {}
     result_dict['train_epochs'] = train_epochs
+    # result_dict['model_state'] = model_state_pickle
     # result_dict['model_path'] = SAVE_PATH
 
     return result_dict
