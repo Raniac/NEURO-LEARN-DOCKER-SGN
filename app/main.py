@@ -43,6 +43,7 @@ def new_task():
 
         counter = 0
         task_id = 'TASK' + time.strftime('%y%m%d%H%M%S') + '{:02d}'.format(counter)
+        task_form['task_id'] = task_id
         app.logger.info('Creating task: %s' % task_id)
 
         task_name = task_form['task_name']
@@ -111,7 +112,7 @@ def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, mo
         fetched_val_data.append(get_data_by_data_name(DB, val_data_name))
     
     if tasktype == 'dl_ft':
-        paramset['model_state_path'] = json.loads(get_model_state_by_task_id(DB, paramset['ft_task_id']))['model_state_path']
+        paramset['model_state_path'] = json.loads(get_model_state_by_task_id(DB, paramset['trained_task_id']))['model_state_path']
     
     fetched_test_data = []
     if enabletest:
