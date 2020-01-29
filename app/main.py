@@ -3,6 +3,8 @@ from celery import Celery
 import argparse
 import json
 import time
+import pickle
+import traceback
 
 from dao.db import *
 from sgn import core
@@ -81,8 +83,8 @@ def new_task():
         response_content['msg'] = 'success'
         response_content['code'] = 200
 
-    except Exception as e:
-        response_content['msg'] = str(e)
+    except:
+        response_content['msg'] = traceback.format_exc()[-min(1000, len(traceback.format_exc())):]
         response_content['code'] = 500
 
     return jsonify(response_content)
@@ -108,8 +110,11 @@ def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, mo
     for val_data_name in valdata:
         fetched_val_data.append(get_data_by_data_name(DB, val_data_name))
     
-    # fetched_model_path = get_model_by_model_name(DB, model)
-    fetched_model_path = '/nld_sgn/models/TASK20012514531800.pkl'
+    if tasktype == 'dl_ft':
+        fetched_model_state = get_model_state_by_task_id(DB, paramset['ft_task_id'])
+        paramset['model_state_path'] = json.loads(fetched_model_state)['model_state_path']
+        # model_state = torch.load(model_state_pickle)
+        # paramset['model_state_path'] = fetched_model_state
     
     fetched_test_data = []
     if enabletest:
@@ -118,12 +123,13 @@ def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, mo
     
     update_task_result_by_task_id(DB, taskid, '', 'Running')
     try:
-        results = core.run_model(taskid, tasktype, fetched_train_data, fetched_val_data, enabletest, fetched_test_data, fetched_model_path, paramset)
+        results = core.run_model(taskid, tasktype, fetched_train_data, fetched_val_data, enabletest, fetched_test_data, model, paramset)
         results_json = json.dumps(results)
         update_task_result_by_task_id(DB, taskid, results_json, 'Success')
         # insert_new_model_with_task_id(DB, taskid, results['model_path'])
-    except Exception as e:
-        update_task_result_by_task_id(DB, taskid, str(e), 'Failed')
+    except:
+        traceback.print_exc()
+        update_task_result_by_task_id(DB, taskid, traceback.format_exc()[-min(1000, len(traceback.format_exc())):], 'Failed')
     return
 
 def parse_arg():

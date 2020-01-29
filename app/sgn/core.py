@@ -59,7 +59,7 @@ def test(device, model, data_loader, data_size):
     
     return test_loss, test_acc, test_out
 
-def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, modelpath, paramset):
+def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, model, paramset):
     ## Hyper-parameter setting
     SEED          = 1 # seed for random state
     DATA_PATH     = '/' # where to locate the data
@@ -100,6 +100,12 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, modelp
     else:
         logging.info('Using CPU')
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+    model = Net_191225().to(device)
+    if tasktype == 'dl_ft':
+        loaded_model_state = torch.load(paramset['model_state_path'])
+        model.load_state_dict(loaded_model_state['state_dict'])
+
     ## 1. Train new model from scratch
     # model = Net_191225().to(device)
     ## 2.1. Load model parameters with network structure
@@ -111,8 +117,10 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, modelp
     # loaded_model_state = pickle.loads(modelstatepickle)
     # model = Net_191225()
     # model.load_state_dict(loaded_model_state['state_dict'])
+
     optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
-    # optimizer.load_state_dict(load_model_state['optimizer'])
+    if tasktype == 'dl_ft':
+        optimizer.load_state_dict(loaded_model_state['optimizer'])
 
     ## learning-rate scheduler.
     scheduler = lr_scheduler.StepLR(optimizer, step_size=LR_STEP_SIZE, gamma=LR_DECAY)
@@ -146,15 +154,15 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, modelp
     ## 2. Save model parameters
     # torch.save(model.state_dict(), SAVE_PATH)
     ## 3. Serialize model parameters by pickle
-    # model_state = {
-    #     'state_dict', model.state_dict(),
-    #     'optimizer', optimizer.state_dict()
-    # }
-    # model_state_pickle = pickle.dumps(model_state)
+    model_state = {
+        'state_dict': model.state_dict(),
+        'optimizer': optimizer.state_dict()
+    }
+    torch.save(model_state, SAVE_PATH)
 
     result_dict = {}
     result_dict['train_epochs'] = train_epochs
     # result_dict['model_state'] = model_state_pickle
-    # result_dict['model_path'] = SAVE_PATH
+    result_dict['model_state_path'] = SAVE_PATH
 
     return result_dict
