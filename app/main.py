@@ -111,10 +111,7 @@ def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, mo
         fetched_val_data.append(get_data_by_data_name(DB, val_data_name))
     
     if tasktype == 'dl_ft':
-        fetched_model_state = get_model_state_by_task_id(DB, paramset['ft_task_id'])
-        paramset['model_state_path'] = json.loads(fetched_model_state)['model_state_path']
-        # model_state = torch.load(model_state_pickle)
-        # paramset['model_state_path'] = fetched_model_state
+        paramset['model_state_path'] = json.loads(get_model_state_by_task_id(DB, paramset['ft_task_id']))['model_state_path']
     
     fetched_test_data = []
     if enabletest:
@@ -126,7 +123,6 @@ def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, mo
         results = core.run_model(taskid, tasktype, fetched_train_data, fetched_val_data, enabletest, fetched_test_data, model, paramset)
         results_json = json.dumps(results)
         update_task_result_by_task_id(DB, taskid, results_json, 'Success')
-        # insert_new_model_with_task_id(DB, taskid, results['model_path'])
     except:
         traceback.print_exc()
         update_task_result_by_task_id(DB, taskid, traceback.format_exc()[-min(1000, len(traceback.format_exc())):], 'Failed')
