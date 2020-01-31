@@ -130,6 +130,27 @@ $ docker run -it --rm -v /path/to/models:/nld_sgn/models -p 80:80 raniac/neuro-l
 ```
 - Or use docker-compose.
 
+## Use Docker-Compose to Deploy Containerized Services
+
+```yml
+version: '2'
+
+services:
+  sgn-service:
+    image: 120.79.49.129:5000/neuro-learn-docker:sgn
+    restart: on-failure
+    hostname: sgn-server
+    ports:
+      - "80:80"
+    volumes:
+      - /c/Users/Benny/Documents/Projects/nld_sgn/models:/nld_sgn/models
+    # environment:
+    #   KAFKA_ADVERTISED_HOST_NAME: localhost
+    # depends_on:
+    #   - zoo1
+    container_name: sgn-service
+```
+
 ## References
 - [Train and Deploy Machine Learning Model With Web Interface - PyTorch & Flask](https://imadelhanafi.com/posts/train_deploy_ml_model/)
 - [在服务器的docker中部署深度学习模型（flask框架）](https://blog.csdn.net/MissShihong/article/details/103313396)
