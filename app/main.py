@@ -7,6 +7,7 @@ import pickle
 import traceback
 
 from dao.db import *
+from service.task_manipulation_service import *
 from sgn import core
 
 app = Flask(__name__)
@@ -38,39 +39,15 @@ def new_task():
 
     try:
         task_form = json.loads(request.data.decode("utf-8"))
-        proj_id = task_form['proj_id']
-        task_type = task_form['task_type']
 
-        counter = 0
-        task_id = 'TASK' + time.strftime('%y%m%d%H%M%S') + '{:02d}'.format(counter)
-        task_form['task_id'] = task_id
-        app.logger.info('Creating task: %s' % task_id)
-
-        task_name = task_form['task_name']
-        task_config = {}
-        task_config['proj_name'] = task_form['proj_name']
-        task_config['train_data'] = task_form['train_data']
-        task_config['val_data'] = task_form['val_data']
-        task_config['enable_test'] = task_form['enable_test']
-        task_config['test_data'] = task_form['test_data']
-        task_config['model'] = task_form['model']
-        task_config['param_set'] = task_form['param_set']
-
-        status = insert_new_task(
-            mysql=DB,
-            task_id=task_id,
-            proj_id=proj_id,
-            task_name=task_name,
-            task_type=task_type,
-            task_config=json.dumps(task_config),
-            task_status='Submitted'
-            )
+        ## TODO add task manipulation service
+        task_form, task_config, status = create_new_task(DB, task_form)
         if status == 1:
             raise Exception('Database Error!')
-        app.logger.info('Task %s created! Waiting for execution...' % task_id)
+        # app.logger.info('Task %s created! Waiting for execution...' % task_id)
 
         task_executor.delay(
-            taskid = task_id,
+            taskid = task_form['task_id'],
             tasktype = task_form['task_type'],
             traindata = task_config['train_data'],
             valdata = task_config['val_data'],
@@ -94,7 +71,7 @@ def new_task():
 def test_db():
     try:
         fetched = get_data_by_data_name(DB, 'A_181210_140_SZ_sfMRI_AAL90')
-        app.logger.debug(len(fetched))
+        # app.logger.debug(len(fetched))
         return 'success'
     except Exception as e:
         return str(e)
