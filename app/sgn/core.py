@@ -102,6 +102,7 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, model,
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     model = Net_191225().to(device)
+    ## for fine-tune tasks, load model state
     if tasktype == 'dl_ft':
         loaded_model_state = torch.load(paramset['model_state_path'])
         model.load_state_dict(loaded_model_state['state_dict'])
@@ -154,12 +155,15 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, model,
     ## 2. Save model parameters
     # torch.save(model.state_dict(), SAVE_PATH)
     ## 3. Serialize model parameters by pickle
+    ## save model state in the deployed server and the path in the database
     model_state = {
         'state_dict': model.state_dict(),
         'optimizer': optimizer.state_dict()
     }
     torch.save(model_state, SAVE_PATH)
 
+    ## return model training results and model state path
+    ## to store them in database
     result_dict = {}
     result_dict['train_epochs'] = train_epochs
     result_dict['model_state_path'] = SAVE_PATH

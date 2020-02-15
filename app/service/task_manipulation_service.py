@@ -2,6 +2,16 @@ from dao.db import *
 import time
 
 def create_new_task(DB, task_form):
+    """
+    Create a new task and save the configuration information.
+    Parameters:
+        DB: Database object for DAO;
+        task_form: Task information.
+    Return: 
+        task_form: Response for debug and confirmation;
+        task_config: Configure celery tasks;
+        status: Success or not
+    """
     try:
         proj_id = task_form['proj_id']
         task_type = task_form['task_type']

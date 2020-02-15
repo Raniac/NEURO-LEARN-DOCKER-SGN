@@ -24,33 +24,18 @@ class MYSQLDB:
 
     def ExecQuery(self, sql):
         """
-        执行查询语句
-        返回的是一个包含tuple的list，list的元素是记录行，tuple的元素是每行记录的字段
-
-        调用示例：
-                ms = MYSQL(host="localhost",user="sa",pwd="123456",db="PythonWeiboStatistics")
-                resList = ms.ExecQuery("SELECT id,NickName FROM WeiBoUser")
-                for (id,NickName) in resList:
-                    print str(id),NickName
+        Return:
+            resList: List of records as tuples of fields.
         """
         cur = self.__GetConnect()
         cur.execute(sql)
         resList = cur.fetchall()
 
-        #查询完毕后必须关闭连接
+        ## Required for query execution
         self.conn.close()
         return resList
 
     def ExecNonQuery(self, sql):
-        """
-        执行非查询语句
-
-        调用示例：
-            cur = self.__GetConnect()
-            cur.execute(sql)
-            self.conn.commit()
-            self.conn.close()
-        """
         cur = self.__GetConnect()
         cur.execute(sql)
         self.conn.commit()

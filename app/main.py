@@ -40,12 +40,13 @@ def new_task():
     try:
         task_form = json.loads(request.data.decode("utf-8"))
 
-        ## TODO add task manipulation service
+        ## task manipulation service - create a new task
         task_form, task_config, status = create_new_task(DB, task_form)
         if status == 1:
             raise Exception('Database Error!')
         # app.logger.info('Task %s created! Waiting for execution...' % task_id)
 
+        ## let celery worker do the job
         task_executor.delay(
             taskid = task_form['task_id'],
             tasktype = task_form['task_type'],
@@ -79,16 +80,17 @@ def test_db():
 @celery.task
 def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, model, paramset):
     DB = init_db(db_host='120.79.49.129', db_name='neurolearn', db_user='neurolearn', db_pwd='nl4444_')
-    ## TODO add DAO for data acquisition
+    ## data acquisition
     fetched_train_data = []
     for train_data_name in traindata:
         fetched_train_data.append(get_data_by_data_name(DB, train_data_name))
-    
     fetched_val_data = []
     for val_data_name in valdata:
         fetched_val_data.append(get_data_by_data_name(DB, val_data_name))
     
+    ## for fine-tune tasks, load saved models from deployed server
     if tasktype == 'dl_ft':
+        ## get the model path from database first
         paramset['model_state_path'] = json.loads(get_model_state_by_task_id(DB, paramset['trained_task_id']))['model_state_path']
     
     fetched_test_data = []
@@ -98,8 +100,10 @@ def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, mo
     
     update_task_result_by_task_id(DB, taskid, '', 'Running')
     try:
+        ## begin to run model
         results = core.run_model(taskid, tasktype, fetched_train_data, fetched_val_data, enabletest, fetched_test_data, model, paramset)
         results_json = json.dumps(results)
+        ## update task results
         update_task_result_by_task_id(DB, taskid, results_json, 'Success')
     except:
         traceback.print_exc()
