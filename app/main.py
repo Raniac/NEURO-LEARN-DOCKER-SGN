@@ -33,7 +33,7 @@ def intro():
     '''
     return intro_cont
 
-@app.route('/api/v0/new_task', methods=['POST'])
+@app.route('/api/v0/new_sgn_task', methods=['POST'])
 def new_task():
     response_content = {}
 
