@@ -51,6 +51,7 @@ Parameter Name | Description | Necessary | Type | Default Value
 ```param_set:lr_decay``` | LR Decay | True | STRING |
 ```param_set:epochs``` | Epochs | True | STRING |
 ```param_set:trained_task_id``` | Trained Task ID | True | STRING |
+```param_set:save_model_state``` | Save Model State | True | BOOLEAN |
 
 - POST Form Example
 
@@ -71,7 +72,8 @@ Parameter Name | Description | Necessary | Type | Default Value
         "lr_step_size": 60,
         "lr_decay": 0.2,
         "epochs": 1,
-        "trained_task_id": "TASK20012912454500"
+        "trained_task_id": "TASK20012912454500",
+        "save_model_state": false
     }
 }
 ```

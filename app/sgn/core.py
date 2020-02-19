@@ -69,6 +69,7 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, model,
     LR_STEP_SIZE  = paramset['lr_step_size'] # epochs before each lr decay
     LR_DECAY      = paramset['lr_decay'] # multiplied by for lr decay
     NUM_EPOCHS    = paramset['epochs'] # number of epochs for training
+    SAVE_MODEL    = paramset['save_model_state'] # whether save model
     SAVE_PATH     = '/nld_sgn/models/checkpoints/' + taskid + '.pth' # name of the model
 
     ## Configure logging
@@ -104,8 +105,11 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, model,
     model = Net_191225().to(device)
     ## for fine-tune tasks, load model state
     if tasktype == 'dl_ft':
-        loaded_model_state = torch.load(paramset['model_state_path'])
-        model.load_state_dict(loaded_model_state['state_dict'])
+        try:
+            loaded_model_state = torch.load(paramset['model_state_path'])
+            model.load_state_dict(loaded_model_state['state_dict'])
+        except:
+            raise Exception("Model state not found.")
 
     ## 1. Train new model from scratch
     # model = Net_191225().to(device)
@@ -121,7 +125,10 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, model,
 
     optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
     if tasktype == 'dl_ft':
-        optimizer.load_state_dict(loaded_model_state['optimizer'])
+        try:
+            optimizer.load_state_dict(loaded_model_state['optimizer'])
+        except:
+            raise Exception("Model state not found.")
 
     ## learning-rate scheduler.
     scheduler = lr_scheduler.StepLR(optimizer, step_size=LR_STEP_SIZE, gamma=LR_DECAY)
@@ -156,11 +163,12 @@ def run_model(taskid, tasktype, traindata, valdata, enabletest, testdata, model,
     # torch.save(model.state_dict(), SAVE_PATH)
     ## 3. Serialize model parameters by pickle
     ## save model state in the deployed server and the path in the database
-    model_state = {
-        'state_dict': model.state_dict(),
-        'optimizer': optimizer.state_dict()
-    }
-    torch.save(model_state, SAVE_PATH)
+    if SAVE_MODEL:
+        model_state = {
+            'state_dict': model.state_dict(),
+            'optimizer': optimizer.state_dict()
+        }
+        torch.save(model_state, SAVE_PATH)
 
     ## return model training results and model state path
     ## to store them in database

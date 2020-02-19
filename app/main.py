@@ -105,9 +105,10 @@ def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, mo
         results_json = json.dumps(results)
         ## update task results
         update_task_result_by_task_id(DB, taskid, results_json, 'Success')
-    except:
+    except Exception as e:
         traceback.print_exc()
-        update_task_result_by_task_id(DB, taskid, traceback.format_exc()[-min(1000, len(traceback.format_exc())):], 'Failed')
+        # update_task_result_by_task_id(DB, taskid, traceback.format_exc()[-min(1000, len(traceback.format_exc())):], 'Failed')
+        update_task_result_by_task_id(DB, taskid, e, 'Failed')
     return
 
 def parse_arg():
