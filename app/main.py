@@ -16,6 +16,17 @@ app.config['CELERY_RESULT_BACKEND'] = 'redis://127.0.0.1:6379/0'
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
 
+def parse_arg():
+    parser = argparse.ArgumentParser(description='nld-sgn-main')
+    parser.add_argument('--host', dest='host', default='0.0.0.0')
+    parser.add_argument('--port', dest='port', default='80')
+    parser.add_argument('--db_host', dest='db_host', default='120.79.49.129')
+    parser.add_argument('--db_name', dest='db_name', default='neurolearn')
+    parser.add_argument('--db_user', dest='db_user', default='neurolearn')
+    parser.add_argument('--db_pwd', dest='db_pwd', default='nl4444_')
+    args = parser.parse_args()
+    return args
+
 DB = init_db(db_host='120.79.49.129', db_name='neurolearn', db_user='neurolearn', db_pwd='nl4444_')
 
 ## Loggers
@@ -41,6 +52,7 @@ def new_task():
         task_form = json.loads(request.data.decode("utf-8"))
 
         ## task manipulation service - create a new task
+        # DB = init_db(db_host='120.79.49.129', db_name='neurolearn', db_user='neurolearn', db_pwd='nl4444_')
         task_form, task_config, status = create_new_task(DB, task_form)
         if status == 1:
             raise Exception('Database Error!')
@@ -71,6 +83,7 @@ def new_task():
 @app.route('/api/v0/test_db', methods=['GET'])
 def test_db():
     try:
+        # DB = init_db(db_host='120.79.49.129', db_name='neurolearn', db_user='neurolearn', db_pwd='nl4444_')
         fetched = get_data_by_data_name(DB, 'A_181210_140_SZ_sfMRI_AAL90')
         # app.logger.debug(len(fetched))
         return 'success'
@@ -110,17 +123,6 @@ def task_executor(taskid, tasktype, traindata, valdata, enabletest, testdata, mo
         # update_task_result_by_task_id(DB, taskid, traceback.format_exc()[-min(1000, len(traceback.format_exc())):], 'Failed')
         update_task_result_by_task_id(DB, taskid, e, 'Failed')
     return
-
-def parse_arg():
-    parser = argparse.ArgumentParser(description='nld-sgn-main')
-    parser.add_argument('--host', dest='host', default='0.0.0.0')
-    parser.add_argument('--port', dest='port', default='80')
-    parser.add_argument('--db_host', dest='db_host', default='120.79.49.129')
-    parser.add_argument('--db_name', dest='db_name', default='neurolearn')
-    parser.add_argument('--db_user', dest='db_user', default='neurolearn')
-    parser.add_argument('--db_pwd', dest='db_pwd', default='nl4444_')
-    args = parser.parse_args()
-    return args
 
 if __name__ == "__main__":
     args = parse_arg()
